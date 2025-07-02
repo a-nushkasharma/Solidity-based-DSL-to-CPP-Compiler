@@ -6,7 +6,6 @@ A tool that converts simplified smart contracts written in a SOlidity based Doma
 
 This compiler parses and semantically analyzes a Solidity-like language and generates equivalent C++ source code. 
 
-###Each file contains the code for the complete DSL semantics commented at the end of it!
 It supports:
 
 - **Primitive types**: `uint`, `int`, `bool`, `address`
