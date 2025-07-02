@@ -1,13 +1,16 @@
 #include <fstream>
-#include "generator/codegen.hpp"
+#include <iostream>
+extern int yydebug;
+#include "ast.h"
 
 extern int yyparse();
 extern FILE* yyin;
-extern ContractNode* root;
+extern std::unique_ptr<Contract> contract; 
 
 int main(int argc, char** argv) {
+    yydebug = 1; 
     if (argc != 2) {
-        fprintf(stderr, "Usage: %s input.dsl\n", argv[0]);
+        std::cerr << "Usage: " << argv[0] << " input.dsl\n";
         return 1;
     }
 
@@ -16,13 +19,18 @@ int main(int argc, char** argv) {
         perror("fopen");
         return 1;
     }
+
     yyin = file;
     yyparse();
     fclose(file);
 
+    if (!contract) {
+        std::cerr << "No contract parsed.\n";
+        return 1;
+    }
+
     std::ofstream out("output.cpp");
-    CodeGenerator generator(out);
-    generator.generate(root);
+    contract->generate(out);
 
     return 0;
 }
